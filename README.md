@@ -249,19 +249,42 @@ This section assumes that the PAM/CCP environment is already available.
 
 ## 3.5. Setup and launch a Hello World job template
 
+- Create a job template that runs the `helloworld.yaml` playbook
+- This playbook performs the Ansible ping connection test task
+- Select `Foxtrot from CCP` credential created in [3.4.](#34-configure-the-machine-credential-for-the-managed-node-to-lookup-from-ccp)
+
 ![image](images/helloworld-job-ccp-template.png)
 
+- Verify job template configuration and select `launch`
+
 ![image](images/helloworld-job-ccp-details-launch.png)
+
+- Verify job run success
 
 ![image](images/helloworld-job-ccp-output.png)
 
 ## 3.6. Setup and launch a Web Server job template
 
+- Now that the hello world job is successful, let's do a more complex playbook to setup the managed node as a web server 
+- The playbook runs the following tasks
+  - Install apache using yum
+  - Allow http service on firewalld
+  - Enable the httpd service to start on machine boot
+  - Deploy the template `index.html.j2` as the index page
+  - Restart the httpd services
+- Select `Foxtrot from CCP` credential created in [3.4.](#34-configure-the-machine-credential-for-the-managed-node-to-lookup-from-ccp)
+
 ![image](images/webserver-job-ccp-template.png)
+
+- Verify job template configuration and select `launch`
 
 ![image](images/webserver-job-ccp-details-launch.png)
 
+- Verify job run success
+
 ![image](images/webserver-job-ccp-output.png)
+
+- Browse to the managed node to verify that web server deployment is successful
 
 ![image](images/webserver-page.png)
 
@@ -346,24 +369,48 @@ conjur variable set -i ssh_keys/sshprvkey -v "$(cat /home/ansible/.ssh/id_rsa &&
 ![image](images/new-machine-cred-cjr-credprovider.png)
 
 - Test query to the `ssh_keys/sshprvkey` variable
-- **Note** ☝️ : Instead of entering the username, you can also configure the credential lookup to username variable (e.g. `ssh_keys/username`)
 
 ![image](images/new-machine-cred-cjr-query.png)
 
+- **Note** ☝️ : Notice that instead of entering the username, you can also configure the credential lookup to username variable (e.g. `ssh_keys/username`)
+
 ## 4.5. Setup and launch a Hello World job template
+
+- Create a job template that runs the `helloworld.yaml` playbook
+- This playbook performs the Ansible ping connection test task
+- Select `Foxtrot from Conjur` credential created in [4.4.](#44-configure-the-machine-credential-for-the-managed-node-to-lookup-from-conjur)
 
 ![image](images/helloworld-job-cjr-template.png)
 
+- Verify job template configuration and select `launch`
+
 ![image](images/helloworld-job-cjr-details-launch.png)
+
+- Verify job run success
 
 ![image](images/helloworld-job-cjr-output.png)
 
 ## 4.6. Setup and launch a Web Server
 
+- Now that the hello world job is successful, let's do a more complex playbook to setup the managed node as a web server 
+- The playbook runs the following tasks
+  - Install apache using yum
+  - Allow http service on firewalld
+  - Enable the httpd service to start on machine boot
+  - Deploy the template `index.html.j2` as the index page
+  - Restart the httpd services
+- Select `Foxtrot from Conjur` credential created in [4.4.](#44-configure-the-machine-credential-for-the-managed-node-to-lookup-from-conjur)
+
 ![image](images/webserver-job-cjr-template.png)
+
+- Verify job template configuration and select `launch`
 
 ![image](images/webserver-job-cjr-details-launch.png)
 
+- Verify job run success
+
 ![image](images/webserver-job-cjr-output.png)
+
+- Browse to the managed node to verify that web server deployment is successful
 
 ![image](images/webserver-page.png)
