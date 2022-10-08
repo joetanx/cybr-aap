@@ -186,6 +186,8 @@ chmod 600 .ssh/authorized_keys
 
 # 3. Integration with CCP
 
+This section assumes that the PAM/CCP environment is already available.
+
 ## 3.1. Onboard SSH key for ansible user in PAM
 
 - Retrieve the private key for the user created in [2.](#2-prepare-ansible-user-on-managed-node) and onboard them to PAM
@@ -247,6 +249,10 @@ chmod 600 .ssh/authorized_keys
 
 # 4. Integration with Conjur
 
+This section assumes that the Conjur environment is already available.
+
+Alternatively, setup Conjur master according to this guide: https://joetanx.github.io/conjur-master
+
 ## 4.1. Setup Conjur policy
 
 - Load the Conjur policy `ansible-vars.yaml`
@@ -267,6 +273,8 @@ rm -f ansible-vars.yaml
 ```
 
 ## 4.2. Store SSH keys for ansible user in Conjur
+
+📌 Perform this section on the Ansible **managed node**
 
 - Setup Conjur CLI, ref: <https://github.com/cyberark/conjur-api-python3/releases>
 ```console
