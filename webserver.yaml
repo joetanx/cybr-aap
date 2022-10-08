@@ -1,0 +1,25 @@
+---
+- hosts: all
+  become: yes
+  handlers:
+  - systemd:
+      name: httpd
+      state: restarted
+    listen: restart httpd
+  tasks:
+  - yum:
+      name: httpd
+      state: latest
+  - firewalld:
+      service: http
+      permanent: yes
+      immediate: yes
+      state: enabled
+  - systemd:
+      name: httpd
+      state: restarted
+      enabled: yes
+  - template:
+      src: index.html.j2
+      dest: /var/www/html/index.html
+    notify: restart httpd
