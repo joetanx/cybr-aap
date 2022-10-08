@@ -83,6 +83,7 @@ failed: [127.0.0.1 -> localhost] (item=127.0.0.1) => {"ansible_loop_var": "item"
 
 - Set a password for the AAP admin login
 - Set the PostgreSQL server details
+
 ```console
 ⋮
 [all:vars]
@@ -99,6 +100,7 @@ pg_sslmode='prefer'  # set to 'verify-full' for client-side enforced SSL
 ```
 
 - Set the container registry login credentials for the installer to push the execution environment container images
+
 ```console
 ⋮
 # Execution Environment Configuration
@@ -110,6 +112,7 @@ registry_password='my_red_hat_password'
 ```
 
 - Set the AAP SSL certificate (if you have any)
+
 ```console
 ⋮
 # SSL-related variables
