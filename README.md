@@ -215,17 +215,35 @@ This section assumes that the PAM/CCP environment is already available.
 
 ## 3.3. Configure CCP as an external secrets management system
 
+- The following parameters are required for AAP to integrate with CCP
+  - CyberArk AIM URL: the URL of the CCP server (or the load balancer, if CCP is behind a load balancer)
+  - Application ID: the application identity configured in [3.2.](#32-configure-application-identity-in-pam)
+  - Client Key/Certificate: the PKI certificate used to authenticate the application identity
+    - The serial number of the certificate needs to be added under `Authentication` in [3.2.](#32-configure-application-identity-in-pam)
+    - The CA chain of the certificate needs to be trusted by the CCP server
+
 ![image](images/new-credprovider-ccp.png)
+
+- Test query to the onboarded account using query string `Object=Operating System-vxUnixSSH-foxtrot.vx-ansible`
 
 ![image](images/new-credprovider-ccp-test.png)
 
 ## 3.4. Configure the machine credential for the managed node to lookup from CCP
 
+- Create new `machine` credential for the managed node
+
 ![image](images/new-machine-cred-ccp.png)
+
+- Select the `Lookup to CCP` as the external secret management system
 
 ![image](images/new-machine-cred-ccp-credprovider.png)
 
+- Test query to the onboarded account using query string `Object=Operating System-vxUnixSSHKeys-foxtrot.vx-ansible`
+
 ![image](images/new-machine-cred-ccp-query-object.png)
+
+- Alternatively, queries to CCP can be also based on attributes, e.g. `Safe=LinuxSSHKeys;Username=ansible;Address=foxtrot.vx`
+- Ref: [Query parameters](https://docs.cyberark.com/Product-Doc/OnlineHelp/AAM-CP/Latest/en/Content/CCP/Calling-the-Web-Service-using-REST.htm)
 
 ![image](images/new-machine-cred-ccp-query-attributes.png)
 
@@ -267,6 +285,8 @@ curl -O https://raw.githubusercontent.com/joetanx/conjur-ansible/main/ansible-va
 conjur policy load -b root -f ansible-vars.yaml
 ```
 
+- **Note** ☝️ : the API key of the Conjur identity `host/ansible/demo` will be shown on console after loading the policy, this key is required to configure Conjur as external secrets management system in [4.3.](#43-configure-conjur-as-an-external-secrets-management-system)
+
 - Clean-up
 ```console
 rm -f ansible-vars.yaml
@@ -302,15 +322,31 @@ conjur variable set -i ssh_keys/sshprvkey -v "$(cat /home/ansible/.ssh/id_rsa &&
 
 ## 4.3. Configure Conjur as an external secrets management system
 
+- The following parameters are required for AAP to integrate with Conjur
+  - Conjur URL: the URL of the Conjur master server (or the load balancer, if Conjur is clustered behind a load balancer)
+  - Account: the account name of the Conjur deployment
+  - Username: the host identity configured in [4.1.](#41-setup-conjur-policy)
+  - API Key: the API key for the host identity, this is shown in console when loading the Conjur policy
+  - Public Key Certificate: the certificate of the Conjur master/cluster or the issuer certificate used by AAP to verify legitimacy of Conjur
+
 ![image](images/new-credprovider-cjr.png)
+
+- Test query to the `ssh_keys/sshprvkey` variable
 
 ![image](images/new-credprovider-cjr-test.png)
 
 ## 4.4. Configure the machine credential for the managed node to lookup from Conjur
 
+- Create new `machine` credential for the managed node
+
 ![image](images/new-machine-cred-cjr.png)
 
+- Select the `Lookup to Conjur` as the external secret management system
+
 ![image](images/new-machine-cred-cjr-credprovider.png)
+
+- Test query to the `ssh_keys/sshprvkey` variable
+- **Note** ☝️ : Instead of entering the username, you can also configure the credential lookup to username variable (e.g. `ssh_keys/username`)
 
 ![image](images/new-machine-cred-cjr-query.png)
 
