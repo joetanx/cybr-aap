@@ -249,22 +249,43 @@ chmod 600 .ssh/authorized_keys
 
 ## 4.1. Setup Conjur policy
 
+- Load the Conjur policy `ansible-vars.yaml`
+  - Creates the policy `ssh_keys`
+    - Creates variables `username` and `sshprvkey` to contain credentials for the Ansible managed node
+    - Creates `consumers` group to authorize members of this group to access the variables
+  - Creates the policy `ansible` with a same-name layer and a host `demo`
+    - The AAP server will use the Conjur identity `host/ansible/demo` to retrieve credentials
+    - Adds `ansible` layer to `consumers` group for `ssh_keys` policy
+```console
+curl -O https://raw.githubusercontent.com/joetanx/conjur-ansible/main/ansible-vars.yaml
+conjur policy load -b root -f ansible-vars.yaml
+```
+
+- Clean-up
+```console
+rm -f ansible-vars.yaml
+```
+
 ## 4.2. Store SSH keys for ansible user in Conjur
+
 - Setup Conjur CLI, ref: <https://github.com/cyberark/conjur-api-python3/releases>
 ```console
 curl -L -O https://github.com/cyberark/cyberark-conjur-cli/releases/download/v7.1.0/conjur-cli-rhel-8.tar.gz
 tar xvf conjur-cli-rhel-8.tar.gz
 mv conjur /usr/local/bin/
 ```
+
 - Clean-up
 ```console
 rm -f conjur-cli-rhel-8.tar.gz
 ```
+
 -  Initialize Conjur CLI and login to conjur
 ```console
 conjur init -u https://conjur.vx
 conjur login -i admin -p CyberArk123!
 ```
+
 - Set the Conjur variable value for username and SSH private key
 ```console
 conjur variable set -i ssh_keys/username -v ansible
