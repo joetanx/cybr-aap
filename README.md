@@ -195,7 +195,8 @@ chmod 600 .ssh/authorized_keys
 
 ## 3.2. Configure Application Identity in PAM
 
-- Create an application identity for the AAP and optionally add the certificate serial number if you are using certificate authentication
+- Create an application identity for the AAP
+- Optional: add the certificate serial number if you are using certificate authentication
 
 ![image](images/ccp-appid-authn.png)
 
