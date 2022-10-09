@@ -27,10 +27,12 @@
 - Ref: [Red Hat Ansible Automation Platform system requirements](https://access.redhat.com/documentation/en-us/red_hat_ansible_automation_platform/2.2/html/red_hat_ansible_automation_platform_installation_guide/planning-installation#automation_controller)
 
 ### 1.1.1. Setup PostgreSQL server:
+
 - Install PostgreSQL server
 - Change authentication for `127.0.0.1/32` to `md5` (i.e. allow password authentication for local connections)
 - Set PostgreSQL server to start on boot
 - Allow PostgreSQL service on firewalld
+
 ```console
 yum -y install postgresql-server
 postgresql-setup --initdb
@@ -40,9 +42,11 @@ firewall-cmd --add-service postgresql --permanent && firewall-cmd --reload
 ```
 
 ### 1.1.2. Setup PostgreSQL database:
+
 - Login to PostgreSQL server: `sudo -i -u postgres psql`
 - Create user `awx` with password `Cyberark1`
 - Create database `awx`
+
 ```console
 CREATE USER awx WITH SUPERUSER PASSWORD 'Cyberark1';
 CREATE DATABASE awx;
@@ -50,6 +54,7 @@ CREATE DATABASE awx;
 ```
 
 ### 1.1.3. Optional: Clean-up PostgreSQL history
+
 ```console
 rm -f /var/lib/pgsql/.psql_history
 ```
@@ -58,8 +63,8 @@ rm -f /var/lib/pgsql/.psql_history
 
 - Retrieve the latest AAP installer from your Red Hat subscription
 - Ref: [Installing automation controller with a database on the same node](https://access.redhat.com/documentation/en-us/red_hat_ansible_automation_platform/2.2/html/red_hat_ansible_automation_platform_installation_guide/single-machine-scenario#standalone-controller-non-inst-database)
-
 - Extract the AAP installer and change directory into the extracted folder
+
 ```console
 tar xvf ansible-automation-platform-setup-bundle-2.2.1-1.tar.gz
 cd ansible-automation-platform-setup-bundle-2.2.1-1
