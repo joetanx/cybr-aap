@@ -75,7 +75,7 @@ aap.vx ansible_connection=local
 ⋮
 ```
 
-- **Note** ☝️ : do not use `127.0.0.1` as the host even if you're running it on localhost and the Red Hat docs says to use `127.0.0.1`, use the hostname of your controller instead. 
+- ☝️ **Note**: do not use `127.0.0.1` as the host even if you're running it on localhost and the Red Hat docs says to use `127.0.0.1`, use the hostname of your controller instead. 
 
 - Attempting to use `127.0.0.1` will result in below failure:
 
@@ -140,7 +140,7 @@ web_server_ssl_key=/tmp/aap.key
 - Prepare the directory and download the demo playbooks
   - `helloworld.yaml` - this is a sample from Ansible
   - `webserver.yaml` - this installs apache web server in the managed node and deploy the `index.html` from `index.html.j2` template
-- **Note** ☝️ : the `sudo -i -u awx` part of the commands is crucial, this runs the commands as `awx` user, so that we won't encounter permission issues on the directory/playbooks
+- ☝️  **Note**: the `sudo -i -u awx` part of the commands is crucial, this runs the commands as `awx` user, so that we won't encounter permission issues on the directory/playbooks
 
 ```console
 sudo -i -u awx mkdir /var/lib/awx/projects/cybrdemo
