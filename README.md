@@ -23,7 +23,8 @@
 
 ## 1.1. Setup PostgreSQL server
 
-- AAP requires a PostgreSQL server (Ref: [Red Hat Ansible Automation Platform system requirements](https://access.redhat.com/documentation/en-us/red_hat_ansible_automation_platform/2.2/html/red_hat_ansible_automation_platform_installation_guide/planning-installation#automation_controller))
+- AAP requires a PostgreSQL server
+- Ref: [Red Hat Ansible Automation Platform system requirements](https://access.redhat.com/documentation/en-us/red_hat_ansible_automation_platform/2.2/html/red_hat_ansible_automation_platform_installation_guide/planning-installation#automation_controller)
 
 ### 1.1.1. Setup PostgreSQL server:
 - Install PostgreSQL server
@@ -66,6 +67,7 @@ cd ansible-automation-platform-setup-bundle-2.2.1-1
 
 ### 1.2.1. Edit the inventory file
 - Add the hostname of the controller under `[automationcontroller]`
+
 ```console
 ⋮
 [automationcontroller]
@@ -76,6 +78,7 @@ aap.vx ansible_connection=local
 - **Note** ☝️ : do not use `127.0.0.1` as the host even if you're running it on localhost and the Red Hat docs says to use `127.0.0.1`, use the hostname of your controller instead. 
 
 - Attempting to use `127.0.0.1` will result in below failure:
+
 ```console
 TASK [ansible.automation_platform_installer.check_config_static : Preflight check - Fail if Automation Controller host is localhost] ***
 failed: [127.0.0.1 -> localhost] (item=127.0.0.1) => {"ansible_loop_var": "item", "changed": false, "item": "127.0.0.1", "msg": "The host specified in the [automationcontroller] group in your inventory file cannot be localhost. Please update your inventory file properly."}
@@ -170,14 +173,18 @@ sudo -i -u awx curl -o /var/lib/awx/projects/cybrdemo/index.html.j2 https://raw.
 ![image](images/new-project.png)
 
 # 2. Prepare Ansible user on managed node
+
 - Create user and set password to `Cyberark1`
+
 ```console
 useradd ansible
 echo -e "Cyberark1\nCyberark1" | (passwd ansible)
 echo 'ansible ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers.d/ansible
 ```
+
 - su to the ansible user
 - Generate ssh key pair and set to `authorized_keys`
+
 ```console
 su - ansible
 mkdir ~/.ssh
@@ -306,6 +313,7 @@ Alternatively, setup Conjur master according to this guide: https://joetanx.gith
   - Creates the policy `ansible` with a same-name layer and a host `demo`
     - The AAP server will use the Conjur identity `host/ansible/demo` to retrieve credentials
     - Adds `ansible` layer to `consumers` group for `ssh_keys` policy
+
 ```console
 curl -O https://raw.githubusercontent.com/joetanx/conjur-ansible/main/ansible-vars.yaml
 conjur policy load -b root -f ansible-vars.yaml
@@ -314,6 +322,7 @@ conjur policy load -b root -f ansible-vars.yaml
 - **Note** ☝️ : the API key of the Conjur identity `host/ansible/demo` will be shown on console after loading the policy, this key is required to configure Conjur as external secrets management system in [4.3.](#43-configure-conjur-as-an-external-secrets-management-system)
 
 - Clean-up
+
 ```console
 rm -f ansible-vars.yaml
 ```
@@ -323,6 +332,7 @@ rm -f ansible-vars.yaml
 📌 Perform this section on the Ansible **managed node**
 
 - Setup Conjur CLI, ref: <https://github.com/cyberark/conjur-api-python3/releases>
+
 ```console
 curl -L -O https://github.com/cyberark/cyberark-conjur-cli/releases/download/v7.1.0/conjur-cli-rhel-8.tar.gz
 tar xvf conjur-cli-rhel-8.tar.gz
@@ -330,17 +340,20 @@ mv conjur /usr/local/bin/
 ```
 
 - Clean-up
+
 ```console
 rm -f conjur-cli-rhel-8.tar.gz
 ```
 
 -  Initialize Conjur CLI and login to conjur
+
 ```console
 conjur init -u https://conjur.vx
 conjur login -i admin -p CyberArk123!
 ```
 
 - Set the Conjur variable value for username and SSH private key
+
 ```console
 conjur variable set -i ssh_keys/username -v ansible
 conjur variable set -i ssh_keys/sshprvkey -v "$(cat /home/ansible/.ssh/id_rsa && echo -e "\r")"
@@ -393,7 +406,7 @@ conjur variable set -i ssh_keys/sshprvkey -v "$(cat /home/ansible/.ssh/id_rsa &&
 
 ![image](images/helloworld-job-cjr-output.png)
 
-## 4.6. Setup and launch a Web Server
+## 4.6. Setup and launch a Web Server job template
 
 - Now that the hello world job is successful, let's do a more complex playbook to setup the managed node as a web server 
 - The playbook runs the following tasks
