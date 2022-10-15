@@ -1,4 +1,4 @@
-# Integrate Ansible Automation Platorm with CCP and Conjur
+# Integrate Ansible Automation Platform with CCP and Conjur
 ## Introduction
 - The Ansible Automation Platorm can integrate with both CCP and Conjur products under the CyberArk secrets manager solution
 - This guide demonstrates the integration between AAP and CyberArk.
