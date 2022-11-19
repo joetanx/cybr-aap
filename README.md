@@ -307,7 +307,7 @@ This section assumes that the PAM/CCP environment is already available.
 
 This section assumes that the Conjur environment is already available.
 
-Alternatively, setup Conjur master according to this guide: https://joetanx.github.io/conjur-master
+Alternatively, setup Conjur master according to this guide: https://github.com/joetanx/conjur-master
 
 ## 4.1. Setup Conjur policy
 
