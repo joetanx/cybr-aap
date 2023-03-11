@@ -22,7 +22,11 @@
         </div>
       </header>
       <main>
-        <p class="fs-3 text-muted text-center">This page is deployed by Ansible using credentials retrieved from CyberArk.</p>
+        <h2 class="display-6 text-center pb-md-4">This page is deployed by Ansible using credentials retrieved from CyberArk.</h2>
+        <div class="card p-4 col-lg-5 col-md-5 mx-auto text-center">
+          <p class="lead">Ansible managed node: {{ ansible_facts['fqdn'] }}</p>
+          <p class="lead">IP Address: {{ ansible_facts['default_ipv4']['address'] }}</p>
+        </div>
       </main>
       <footer class="my-md-5 pt-md-5 border-top">
         <div class="container">
