@@ -4,11 +4,11 @@
 - This guide demonstrates the integration between AAP and CyberArk.
 
 ### Software Versions
-- RHEL 9.0
-- Ansible Automation Platorm 2.2
-- Ansible Automation Controller 4.2.1
+- RHEL 9.1
+- Ansible Automation Platorm 2.3
+- Ansible Automation Controller 4.3
 - PAM/CCP 12.6
-- Conjur Enterprise 12.7.0
+- Conjur Enterprise 12.9.0
 
 ### Servers
 
@@ -21,53 +21,19 @@
 
 # 1. Setup Ansible Automation Platorm
 
-## 1.1. Setup PostgreSQL server
+## 1.1. PostgreSQL server
 
-- AAP requires a PostgreSQL server
-- Ref: [Red Hat Ansible Automation Platform system requirements](https://access.redhat.com/documentation/en-us/red_hat_ansible_automation_platform/2.2/html/red_hat_ansible_automation_platform_installation_guide/planning-installation#automation_controller)
-
-### 1.1.1. Setup PostgreSQL server:
-
-- Install PostgreSQL server
-- Change authentication for `127.0.0.1/32` to `md5` (i.e. allow password authentication for local connections)
-- Set PostgreSQL server to start on boot
-- Allow PostgreSQL service on firewalld
-
-```console
-yum -y install postgresql-server
-postgresql-setup --initdb
-sed -i 's/host    all             all             127.0.0.1\/32            ident/host    all             all             127.0.0.1\/32            md5/' /var/lib/pgsql/data/pg_hba.conf
-systemctl enable --now postgresql
-firewall-cmd --add-service postgresql --permanent && firewall-cmd --reload
-```
-
-### 1.1.2. Setup PostgreSQL database:
-
-- Login to PostgreSQL server: `sudo -i -u postgres psql`
-- Create user `awx` with password `Cyberark1`
-- Create database `awx`
-
-```console
-CREATE USER awx WITH SUPERUSER PASSWORD 'Cyberark1';
-CREATE DATABASE awx;
-\q
-```
-
-### 1.1.3. Optional: Clean-up PostgreSQL history
-
-```console
-rm -f /var/lib/pgsql/.psql_history
-```
+- AAP [requires a PostgreSQL server](https://access.redhat.com/documentation/en-us/red_hat_ansible_automation_platform/2.3/html/red_hat_ansible_automation_platform_planning_guide/platform-system-requirements#ref-postgresql-requirements), but this will be part of the `Standalone automation controller with internal database` installation processs from AAP version 2.3
 
 ## 1.2. Install AAP
 
+- Ref: [Standalone automation controller with internal database](https://access.redhat.com/documentation/en-us/red_hat_ansible_automation_platform/2.3/html/red_hat_ansible_automation_platform_installation_guide/assembly-platform-install-scenario#ref-standlone-platform-inventory_platform-install-scenario)
 - Retrieve the latest AAP installer from your Red Hat subscription
-- Ref: [Installing automation controller with a database on the same node](https://access.redhat.com/documentation/en-us/red_hat_ansible_automation_platform/2.2/html/red_hat_ansible_automation_platform_installation_guide/single-machine-scenario#standalone-controller-non-inst-database)
 - Extract the AAP installer and change directory into the extracted folder
 
 ```console
-tar xvf ansible-automation-platform-setup-bundle-2.2.1-1.tar.gz
-cd ansible-automation-platform-setup-bundle-2.2.1-1
+tar xvf ansible-automation-platform-setup-bundle-2.3-1.4.tar.gz
+cd ansible-automation-platform-setup-bundle-2.3-1.4
 ```
 
 ### 1.2.1. Edit the inventory file
@@ -80,15 +46,6 @@ aap.vx ansible_connection=local
 ⋮
 ```
 
-- ☝️ **Note**: do not use `127.0.0.1` as the host even if you're running it on localhost and the Red Hat docs says to use `127.0.0.1`, use the hostname of your controller instead. 
-
-- Attempting to use `127.0.0.1` will result in below failure:
-
-```console
-TASK [ansible.automation_platform_installer.check_config_static : Preflight check - Fail if Automation Controller host is localhost] ***
-failed: [127.0.0.1 -> localhost] (item=127.0.0.1) => {"ansible_loop_var": "item", "changed": false, "item": "127.0.0.1", "msg": "The host specified in the [automationcontroller] group in your inventory file cannot be localhost. Please update your inventory file properly."}
-```
-
 - Set a password for the AAP admin login
 - Set the PostgreSQL server details
 
@@ -97,7 +54,7 @@ failed: [127.0.0.1 -> localhost] (item=127.0.0.1) => {"ansible_loop_var": "item"
 [all:vars]
 admin_password='Cyberark1'
 
-pg_host='127.0.0.1'
+pg_host=''
 pg_port=5432
 
 pg_database='awx'
